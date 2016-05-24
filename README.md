@@ -12,9 +12,7 @@ An overview of outstanding pull requests.
 #### Client
 
 * [React](https://facebook.github.io/react/)
-* [Redux](https://github.com/reactjs/redux)
 * [Apollo client](http://docs.apollostack.com/apollo-client/)
-* [Apollo redux integration](http://docs.apollostack.com/apollo-client/redux.html)
 
 ## Strategy
 
