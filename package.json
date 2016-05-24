@@ -59,6 +59,7 @@
     "bootstrap": "^4.0.0-alpha.2",
     "config": "^1.20.4",
     "express": "^4.13.4",
+    "github-oauth": "^0.2.2",
     "react": "^15.1.0",
     "react-dom": "^15.1.0"
   }
