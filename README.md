@@ -22,4 +22,4 @@ An overview of outstanding pull requests.
 * Using Apollo's [GraphQL type language](http://docs.apollostack.com/apollo-server/generate-schema.html), create a GraphQLSchema to make data available to the client.
 * On the client, import this data using [`mapQueriesToProps`](http://docs.apollostack.com/apollo-client/react.html) and present an interface similar to this:
 
-![screenshot](https://cloud.githubusercontent.com/assets/3180526/15503080/a15aeefc-21af-11e6-9616-d3ea6f990f4f.png)
+![screenshot](https://cloud.githubusercontent.com/assets/3180526/15504828/b878d9ec-21b8-11e6-82e9-b619af28f98f.png)
