@@ -56,11 +56,14 @@
     "npm-run-all": "^2.1.1"
   },
   "dependencies": {
+    "async": "^2.0.0-rc.5",
     "bootstrap": "^4.0.0-alpha.2",
     "config": "^1.20.4",
     "express": "^4.13.4",
     "github-oauth": "^0.2.2",
+    "parse-link-header": "^0.4.1",
     "react": "^15.1.0",
-    "react-dom": "^15.1.0"
+    "react-dom": "^15.1.0",
+    "request": "^2.72.0"
   }
 }

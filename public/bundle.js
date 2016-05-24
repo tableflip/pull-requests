@@ -19704,9 +19704,18 @@ exports.default = _react2.default.createClass({
   displayName: 'app',
   render: function render() {
     return _react2.default.createElement(
-      'h1',
+      'div',
       null,
-      'Pull Requests'
+      _react2.default.createElement(
+        'h1',
+        null,
+        'Pull Requests'
+      ),
+      _react2.default.createElement(
+        'a',
+        { className: 'btn btn-primary btn-large', href: '/login' },
+        'Login'
+      )
     );
   }
 });

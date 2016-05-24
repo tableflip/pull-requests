@@ -1,4 +1,5 @@
 {
+  "appName": "Pull Requests",
   "port": 3000,
   "rootUrl": "",
   "github": {
