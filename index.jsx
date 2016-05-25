@@ -33,13 +33,6 @@ go.addRoutes(app, (err, token, res) => {
     if (err) return console.error('Could not get user', err)
     console.log('User', user)
   })
-  github.getRepos((err, repos) => {
-    if (err) return console.error('Could not get repos', err)
-    github.getPullRequests(repos.filter(repo => repo.owner.login === 'richsilv'), (err, res) => {
-      if (err) return console.error('Could not get pulls', err)
-      console.log('Pull request count', res.length)
-    })
-  })
   res.redirect('/')
 })
 
