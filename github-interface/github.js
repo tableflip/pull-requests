@@ -15,17 +15,13 @@ export default function (initToken) {
     params.headers.Authorization = `token ${token}`
     params.headers.Accept = params.headers.Accept || 'application/vnd.github.v3+json'
     params.headers['User-Agent'] = config.appName
-    request(params, (err, res, body) => {
-      if (err) return cb(err)
-      if (res.statusCode !== 200) return cb(res.statusCode, body)
-      cb(null, JSON.parse(body))
-    })
+    request(params, cb)
   }
 
-  function makeRepoRequest (url, cb) {
+  function githubGet (url, cb) {
     githubCall({
       method: 'GET',
-      url: url
+      url: `${baseUrl}${url}`
     }, cb)
   }
 
@@ -33,20 +29,48 @@ export default function (initToken) {
     setToken (newToken) {
       token = newToken
     },
+    getUser (cb) {
+      if (!cb) throw new Error('Please supply a callback function')
+      githubGet('/user', (err, res, body) => {
+        if (err) return cb(err)
+        cb(null, JSON.parse(body))
+      })
+    },
     getRepos (cb) {
       if (!cb) throw new Error('Please supply a callback function')
       let repos = []
-      let q = async.queue(function (url, done) {
-        makeRepoRequest(url, function (err, res) {
-          if (err) return cb(err)
-          if (!res) return done()
-          repos = repos.concat(res.data)
+      let q = async.queue((url, done) => {
+        githubGet(url, (err, res, body) => {
+          if (err) return done(err)
+          if (!body) return done()
+          repos = repos.concat(JSON.parse(body))
           let headers = parseGithubHeaders(res.headers.link)
-          if (headers.next) q.push(headers.next.url)
+          if (headers && headers.next) q.push(headers.next.url)
           done()
         })
       })
-      q.push(`${baseUrl}/user/repos?per_page=100`)
+      q.push('/user/repos?per_page=100')
+      q.drain = function () {
+        cb(null, repos)
+      }
+    },
+    getPullRequests (repos, cb) {
+      if (!cb) throw new Error('Please supply a callback function')
+      let pulls = []
+      let q = async.queue((url, done) => {
+        githubGet(url, (err, res, body) => {
+          if (err) return done(err)
+          if (!body) return done()
+          pulls = pulls.concat(JSON.parse(body))
+          let headers = parseGithubHeaders(res.headers.link)
+          if (headers && headers.next) q.push(headers.next.url)
+          done()
+        })
+      })
+      repos.forEach((repo) => {
+        const repoName = (typeof repo === 'string') ? repo : repo.full_name
+        q.push(`/repos/${repoName}/pulls?per_page=100`)
+      })
       q.drain = function () {
         cb(null, repos)
       }

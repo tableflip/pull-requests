@@ -21,17 +21,24 @@ const go = githubOauth({
   baseURL: config.rootUrl,
   loginURI: '/login',
   callbackURI: '/callback',
-  scope: 'user'
+  scope: 'repo'
 })
 go.addRoutes(app, (err, token, res) => {
   if (err) {
     console.error(err)
     res.redirect('/login-error')
   }
-  github.setToken(token)
+  github.setToken(token.access_token)
+  github.getUser((err, user) => {
+    if (err) return console.error('Could not get user', err)
+    console.log('User', user)
+  })
   github.getRepos((err, repos) => {
-    if (err) return console.error('Could not get repos', err, repos)
-    console.log(repos)
+    if (err) return console.error('Could not get repos', err)
+    github.getPullRequests(repos.filter(repo => repo.owner.login === 'richsilv'), (err, res) => {
+      if (err) return console.error('Could not get pulls', err)
+      console.log('Pull request count', res.length)
+    })
   })
   res.redirect('/')
 })
