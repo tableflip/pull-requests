@@ -1,6 +1,7 @@
 import express from 'express'
 import config from 'config'
 import githubOauth from 'github-oauth'
+import graphQLServer from './graphql-server'
 import root from './root'
 import githubInterface from './github-interface/github'
 
@@ -41,3 +42,5 @@ const server = app.listen(config.port, () => {
   const port = server.address().port
   console.log(`Server running at: http://${host}:${port} env: ${process.env.NODE_ENV}`)
 })
+
+graphQLServer(app)

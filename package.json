@@ -56,13 +56,17 @@
     "npm-run-all": "^2.1.1"
   },
   "dependencies": {
+    "apollo-client": "^0.3.12",
     "async": "^2.0.0-rc.5",
     "bootstrap": "^4.0.0-alpha.2",
     "config": "^1.20.4",
     "express": "^4.13.4",
+    "faker": "^3.1.0",
     "github-oauth": "^0.2.2",
+    "graphql-tools": "^0.4.2",
     "parse-link-header": "^0.4.1",
     "react": "^15.1.0",
+    "react-apollo": "^0.3.5",
     "react-dom": "^15.1.0",
     "request": "^2.72.0"
   }

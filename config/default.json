@@ -1,6 +1,7 @@
 {
   "appName": "Pull Requests",
   "port": 3000,
+  "graphQLPort": 8080,
   "rootUrl": "",
   "github": {
     "client": "",
