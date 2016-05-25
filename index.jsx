@@ -19,7 +19,7 @@ app.get('/login-error', (req, res) => {
 const go = githubOauth({
   githubClient: config.github.client,
   githubSecret: config.github.secret,
-  baseURL: config.rootUrl,
+  baseURL: `${config.host}:${config.port}`,
   loginURI: '/login',
   callbackURI: '/callback',
   scope: 'repo'

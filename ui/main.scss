@@ -1,1 +1,50 @@
 @import 'bootstrap/scss/bootstrap';
+
+$gray-dark:                 #373a3c;
+$gray:                      #55595c;
+$gray-light:                #818a91;
+$gray-lighter:              #eceeef;
+$gray-lightest:             #f7f7f9;
+
+$brand-primary:             #0275d8;
+$brand-success:             #5cb85c;
+$brand-info:                #5bc0de;
+$brand-warning:             #f0ad4e;
+$brand-danger:              #d9534f;
+
+.pull-request {
+  border-radius: 5px;
+  border: 1px solid $gray-lighter;
+  margin-bottom: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .main-info {
+    flex: 0 1 50%;
+  }
+  .comments {
+    flex: 0 1 20%;
+    color: $gray-light;
+  }
+  .updated {
+    flex: 1 0 20%;
+  }
+  .traffic-light {
+  }
+
+  .repo-name {
+    color: $brand-primary;
+    font-weight: bold;
+  }
+  .pr-title {
+    margin-right: 5px;
+  }
+}

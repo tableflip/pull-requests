@@ -4557,3 +4557,28 @@ a.bg-danger:focus, a.bg-danger:hover {
 @media print {
   .hidden-print {
     display: none !important; } }
+
+.pull-request {
+  border-radius: 5px;
+  border: 1px solid #eceeef;
+  margin-bottom: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; }
+  .pull-request:last-child {
+    margin-bottom: 0; }
+  .pull-request .main-info {
+    flex: 0 1 50%; }
+  .pull-request .comments {
+    flex: 0 1 20%;
+    color: #818a91; }
+  .pull-request .updated {
+    flex: 1 0 20%; }
+  .pull-request .repo-name {
+    color: #0275d8;
+    font-weight: bold; }
+  .pull-request .pr-title {
+    margin-right: 5px; }

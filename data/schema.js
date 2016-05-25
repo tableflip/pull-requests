@@ -1,5 +1,5 @@
 const typeDefinitions = `
-scalar Url
+scalar url
 
 type Query {
   user: User,
@@ -12,7 +12,8 @@ type User {
   name: String,
   type: String,
   company: String,
-  avatar: Url
+  avatar: url,
+  url: url
 }
 
 type Organization {
@@ -28,7 +29,7 @@ type Repo {
 
 type PullRequest {
   repo: Repo,
-  url: Url,
+  url: url,
   user: User,
   assignee: User,
   title: String,

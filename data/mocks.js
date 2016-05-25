@@ -1,8 +1,12 @@
 import faker from 'faker'
 
 const mocks = {
+  url: () => ({ foo: 'bar' }),
   String: () => faker.lorem.words(),
-  Url: () => faker.internet.avatar()
+  PullRequest: () => ({
+    createdAt: () => faker.date.past().toISOString(),
+    updatedAt: () => faker.date.past().toISOString()
+  })
 }
 
 export default mocks

@@ -1,24 +1,20 @@
 import React from 'react'
 import { connect } from 'react-apollo'
 import gql from 'apollo-client/gql'
+import LoginButton from './login-button.jsx'
+import PullRequests from './pull-requests.jsx'
 
 const App = React.createClass({
   propTypes: {
-    user: React.PropTypes.object
+    userDoc: React.PropTypes.object
   },
   render () {
     return (
-      <div>
+      <div className='container p-y-1'>
         <h1>Pull Requests</h1>
-        <a className='btn btn-primary btn-large' href='/login'>Login</a>
+        <LoginButton userDoc={this.props.userDoc} />
         <hr />
-        <p>
-          <ul>
-            <li>User loading: {this.props.user.loading ? 'true' : 'false'}</li>
-            <li>User error: {this.props.user.errors ? this.props.user.errors.message : 'none'}</li>
-            <li>Username: {this.props.user.user && this.props.user.user.name}</li>
-          </ul>
-        </p>
+        <PullRequests />
       </div>
     )
   }
@@ -26,7 +22,7 @@ const App = React.createClass({
 
 function mapQueriesToProps ({ ownProps, state }) {
   return {
-    user: {
+    userDoc: {
       query: gql`
         query UserDoc {
           user {
