@@ -13,6 +13,7 @@ const PullRequests = React.createClass({
         <div>Loading...</div>
       )
     }
+    if (!this.props.pullRequestData.pullRequests) return null
     return (
       <div>
         {this.props.pullRequestData.pullRequests.map((pullRequest, ind) => (<PullRequest key={ind} pullRequest={pullRequest} />))}
@@ -33,11 +34,11 @@ const PullRequest = React.createClass({
       <div className='pull-request'>
         <span className='main-info'>
           <div className='repo-name'>
-            {pr.repo.fullName}
+            <a href={pr.repo.url} target='_blank'>{pr.repo.fullName}</a>
           </div>
           <div>
-            <span className='pr-title'>{pr.title}</span>
-            <span className='username'>(<a href={pr.user.url}>{pr.user.name}</a>)</span>
+            <span className='pr-title'><a href={pr.url} target='_blank'>{pr.title}</a></span>
+            <span className='username'>(<a href={pr.user.url} target='_blank'>{pr.user.login}</a>)</span>
           </div>
         </span>
         <span className='comments'>
@@ -66,21 +67,22 @@ function mapQueriesToProps ({ ownProps, state }) {
       query: gql`
         query PullRequests {
           pullRequests {
+            title
+            body
+            url
+            createdAt
+            updatedAt
             repo {
               fullName
+              url
             }
-            url
             user {
-              name
+              login
               url
             }
             assignee {
               name
             }
-            title
-            body
-            createdAt
-            updatedAt
           }
         }
       `

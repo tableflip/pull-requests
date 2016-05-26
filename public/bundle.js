@@ -39755,7 +39755,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _templateObject = _taggedTemplateLiteral(['\n        query UserDoc {\n          user {\n            name\n            type\n            company\n            avatar\n          }\n        }\n      '], ['\n        query UserDoc {\n          user {\n            name\n            type\n            company\n            avatar\n          }\n        }\n      ']);
+var _templateObject = _taggedTemplateLiteral(['\n        query UserDoc {\n          user {\n            name\n            type\n            company\n            avatar\n          }\n          repos {\n            fullName\n          }\n        }\n      '], ['\n        query UserDoc {\n          user {\n            name\n            type\n            company\n            avatar\n          }\n          repos {\n            fullName\n          }\n        }\n      ']);
 
 var _react = require('react');
 
@@ -39834,8 +39834,12 @@ exports.default = _react2.default.createClass({
     userDoc: _react2.default.PropTypes.object
   },
   render: function render() {
-    if (this.props.userDoc.loading) return null;
-    if (this.props.userDoc.user) {
+    if (this.props.userDoc.loading) return _react2.default.createElement(
+      'p',
+      null,
+      'Logging in...'
+    );
+    if (this.props.userDoc.user.name) {
       return _react2.default.createElement(
         'p',
         null,
@@ -39858,7 +39862,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _templateObject = _taggedTemplateLiteral(['\n        query PullRequests {\n          pullRequests {\n            repo {\n              fullName\n            }\n            url\n            user {\n              name\n              url\n            }\n            assignee {\n              name\n            }\n            title\n            body\n            createdAt\n            updatedAt\n          }\n        }\n      '], ['\n        query PullRequests {\n          pullRequests {\n            repo {\n              fullName\n            }\n            url\n            user {\n              name\n              url\n            }\n            assignee {\n              name\n            }\n            title\n            body\n            createdAt\n            updatedAt\n          }\n        }\n      ']);
+var _templateObject = _taggedTemplateLiteral(['\n        query PullRequests {\n          pullRequests {\n            title\n            body\n            url\n            createdAt\n            updatedAt\n            repo {\n              fullName\n              url\n            }\n            user {\n              login\n              url\n            }\n            assignee {\n              name\n            }\n          }\n        }\n      '], ['\n        query PullRequests {\n          pullRequests {\n            title\n            body\n            url\n            createdAt\n            updatedAt\n            repo {\n              fullName\n              url\n            }\n            user {\n              login\n              url\n            }\n            assignee {\n              name\n            }\n          }\n        }\n      ']);
 
 var _react = require('react');
 
@@ -39892,6 +39896,7 @@ var PullRequests = _react2.default.createClass({
         'Loading...'
       );
     }
+    if (!this.props.pullRequestData.pullRequests) return null;
     return _react2.default.createElement(
       'div',
       null,
@@ -39921,7 +39926,11 @@ var PullRequest = _react2.default.createClass({
         _react2.default.createElement(
           'div',
           { className: 'repo-name' },
-          pr.repo.fullName
+          _react2.default.createElement(
+            'a',
+            { href: pr.repo.url, target: '_blank' },
+            pr.repo.fullName
+          )
         ),
         _react2.default.createElement(
           'div',
@@ -39929,7 +39938,11 @@ var PullRequest = _react2.default.createClass({
           _react2.default.createElement(
             'span',
             { className: 'pr-title' },
-            pr.title
+            _react2.default.createElement(
+              'a',
+              { href: pr.url, target: '_blank' },
+              pr.title
+            )
           ),
           _react2.default.createElement(
             'span',
@@ -39937,8 +39950,8 @@ var PullRequest = _react2.default.createClass({
             '(',
             _react2.default.createElement(
               'a',
-              { href: pr.user.url },
-              pr.user.name
+              { href: pr.user.url, target: '_blank' },
+              pr.user.login
             ),
             ')'
           )

@@ -31,6 +31,9 @@ function mapQueriesToProps ({ ownProps, state }) {
             company
             avatar
           }
+          repos {
+            fullName
+          }
         }
       `
     }

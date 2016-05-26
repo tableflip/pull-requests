@@ -1,11 +1,13 @@
 import express from 'express'
 import config from 'config'
 import githubOauth from 'github-oauth'
+import promisify from 'promisify-node'
 import graphQLServer from './graphql-server'
 import root from './root'
 import githubInterface from './github-interface/github'
 
 const github = githubInterface()
+promisify(github)
 const app = express()
 app.use(express.static('public'))
 
@@ -15,6 +17,7 @@ app.get('/', (req, res) => {
 app.get('/login-error', (req, res) => {
   res.send('There was a login error')
 })
+graphQLServer(app, github)
 
 const go = githubOauth({
   githubClient: config.github.client,
@@ -24,6 +27,7 @@ const go = githubOauth({
   callbackURI: '/callback',
   scope: 'repo'
 })
+
 go.addRoutes(app, (err, token, res) => {
   if (err) {
     console.error(err)
@@ -32,8 +36,6 @@ go.addRoutes(app, (err, token, res) => {
   github.setToken(token.access_token)
   res.redirect('/')
 })
-
-graphQLServer(app, github)
 
 const server = app.listen(config.port, () => {
   const host = server.address().address

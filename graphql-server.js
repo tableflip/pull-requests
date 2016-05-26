@@ -1,5 +1,6 @@
 import { apolloServer } from 'graphql-tools'
 import Schema from './data/schema'
+// import Mocks from './data/mocks'
 import Resolvers from './data/resolvers'
 
 export default function (app, github) {
@@ -7,6 +8,7 @@ export default function (app, github) {
     graphiql: true,
     pretty: true,
     schema: Schema,
-    resolvers: Resolvers
+    // mocks: Mocks
+    resolvers: Resolvers(github)
   }))
 }

@@ -5,8 +5,8 @@ export default React.createClass({
     userDoc: React.PropTypes.object
   },
   render () {
-    if (this.props.userDoc.loading) return null
-    if (this.props.userDoc.user) {
+    if (this.props.userDoc.loading) return (<p>Logging in...</p>)
+    if (this.props.userDoc.user.name) {
       return (<p>Logged in as {this.props.userDoc.user.name}</p>)
     }
     return (

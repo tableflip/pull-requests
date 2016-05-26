@@ -4,6 +4,7 @@ import request from 'request'
 import config from 'config'
 
 var baseUrl = 'https://api.github.com'
+var baseUrlRE = RegExp(`^${baseUrl}(.*)`)
 var token = null
 
 export default function (initToken) {
@@ -19,9 +20,11 @@ export default function (initToken) {
   }
 
   function githubGet (url, cb) {
+    const urlMatch = baseUrlRE.exec(url)
+    let fullUrl = urlMatch ? url : `${baseUrl}${url}`
     githubCall({
       method: 'GET',
-      url: `${baseUrl}${url}`
+      url: fullUrl
     }, cb)
   }
 
@@ -31,6 +34,7 @@ export default function (initToken) {
     },
     getUser (cb) {
       if (!cb) throw new Error('Please supply a callback function')
+      if (!token) cb(null, {})
       githubGet('/user', (err, res, body) => {
         if (err) return cb(err)
         cb(null, JSON.parse(body))
@@ -38,6 +42,7 @@ export default function (initToken) {
     },
     getRepos (cb) {
       if (!cb) throw new Error('Please supply a callback function')
+      if (!token) cb(null, [])
       let repos = []
       let q = async.queue((url, done) => {
         githubGet(url, (err, res, body) => {
@@ -56,6 +61,7 @@ export default function (initToken) {
     },
     getPullRequests (repos, cb) {
       if (!cb) throw new Error('Please supply a callback function')
+      if (!token) cb(null, [])
       let pulls = []
       let q = async.queue((url, done) => {
         githubGet(url, (err, res, body) => {
@@ -66,13 +72,13 @@ export default function (initToken) {
           if (headers && headers.next) q.push(headers.next.url)
           done()
         })
-      })
+      }, 100)
       repos.forEach((repo) => {
         const repoName = (typeof repo === 'string') ? repo : repo.full_name
         q.push(`/repos/${repoName}/pulls?per_page=100`)
       })
       q.drain = function () {
-        cb(null, repos)
+        cb(null, pulls)
       }
     }
   }

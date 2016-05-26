@@ -1,20 +1,21 @@
 @import 'bootstrap/scss/bootstrap';
 
-$gray-dark:                 #373a3c;
-$gray:                      #55595c;
-$gray-light:                #818a91;
-$gray-lighter:              #eceeef;
-$gray-lightest:             #f7f7f9;
+$gray-light:                #8e8ea0;
+$gray:                      darken($gray-light, 10%);
+$gray-dark:                 darken($gray-light, 20%);
+$gray-lighter:              lighten($gray-light, 10%);
+$gray-lightest:             lighten($gray-light, 30%);
 
-$brand-primary:             #0275d8;
-$brand-success:             #5cb85c;
-$brand-info:                #5bc0de;
+$brand-primary:             #AE8884;
+$brand-success:             #1A3100;
+$brand-info:                #65D6D3;
 $brand-warning:             #f0ad4e;
 $brand-danger:              #d9534f;
 
 .pull-request {
   border-radius: 5px;
   border: 1px solid $gray-lighter;
+  background-color: $gray-lightest;
   margin-bottom: 10px;
   padding: 15px;
   display: flex;
@@ -32,10 +33,11 @@ $brand-danger:              #d9534f;
   }
   .comments {
     flex: 0 1 20%;
-    color: $gray-light;
+    color: $gray;
   }
   .updated {
     flex: 1 0 20%;
+    color: $gray;
   }
   .traffic-light {
   }
@@ -46,5 +48,8 @@ $brand-danger:              #d9534f;
   }
   .pr-title {
     margin-right: 5px;
+    a {
+      color: $gray-dark;
+    }
   }
 }

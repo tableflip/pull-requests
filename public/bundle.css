@@ -4560,7 +4560,8 @@ a.bg-danger:focus, a.bg-danger:hover {
 
 .pull-request {
   border-radius: 5px;
-  border: 1px solid #eceeef;
+  border: 1px solid #aaaab7;
+  background-color: #e1e1e6;
   margin-bottom: 10px;
   padding: 15px;
   display: flex;
@@ -4574,11 +4575,14 @@ a.bg-danger:focus, a.bg-danger:hover {
     flex: 0 1 50%; }
   .pull-request .comments {
     flex: 0 1 20%;
-    color: #818a91; }
+    color: #737388; }
   .pull-request .updated {
-    flex: 1 0 20%; }
+    flex: 1 0 20%;
+    color: #737388; }
   .pull-request .repo-name {
-    color: #0275d8;
+    color: #AE8884;
     font-weight: bold; }
   .pull-request .pr-title {
     margin-right: 5px; }
+    .pull-request .pr-title a {
+      color: #5b5b6d; }
