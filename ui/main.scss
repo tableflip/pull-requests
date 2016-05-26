@@ -29,14 +29,14 @@ $brand-danger:              #d9534f;
   }
 
   .main-info {
-    flex: 1 1 400px;
+    flex: 0 1 500px;
   }
   .last-update {
-    flex: 0 1 200px;
+    flex: 0 1 300px;
     color: $gray;
   }
   .created {
-    flex: 1 0 100px;
+    flex: 1 0 200px;
     color: $gray;
   }
   .traffic-light {

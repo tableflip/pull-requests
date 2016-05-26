@@ -4572,12 +4572,12 @@ a.bg-danger:focus, a.bg-danger:hover {
   .pull-request:last-child {
     margin-bottom: 0; }
   .pull-request .main-info {
-    flex: 1 1 400px; }
+    flex: 0 1 500px; }
   .pull-request .last-update {
-    flex: 0 1 200px;
+    flex: 0 1 300px;
     color: #737388; }
   .pull-request .created {
-    flex: 1 0 100px;
+    flex: 1 0 200px;
     color: #737388; }
   .pull-request .repo-name {
     color: #AE8884;
