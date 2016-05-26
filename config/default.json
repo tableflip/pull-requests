@@ -1,7 +1,7 @@
 {
   "appName": "Pull Requests",
-  "host": "",
-  "port": "",
+  "host": "http://localhost",
+  "port": "3000",
   "github": {
     "client": "",
     "secret": ""

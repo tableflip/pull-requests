@@ -1,6 +1,15 @@
 # Pull-requests
 An overview of outstanding pull requests.
 
+## Getting started
+
+* Clone this repo.
+* Copy `config/default.json` to `config/local.json` and update the Github credentials as required.
+* `npm install`
+* `npm run build`
+* `npm start`
+* Open http://localhost:3000 and click *Login*.
+
 ## Architecture
 
 #### Server
