@@ -39755,7 +39755,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _templateObject = _taggedTemplateLiteral(['\n        query UserDoc {\n          user {\n            name\n            type\n            company\n            avatar\n          }\n          repos {\n            fullName\n          }\n        }\n      '], ['\n        query UserDoc {\n          user {\n            name\n            type\n            company\n            avatar\n          }\n          repos {\n            fullName\n          }\n        }\n      ']);
+var _templateObject = _taggedTemplateLiteral(['\n        query UserDoc {\n          user {\n            name\n            type\n            company\n            avatar\n            login\n          }\n          repos {\n            fullName\n          }\n        }\n      '], ['\n        query UserDoc {\n          user {\n            name\n            type\n            company\n            avatar\n            login\n          }\n          repos {\n            fullName\n          }\n        }\n      ']);
 
 var _react = require('react');
 
@@ -39796,7 +39796,7 @@ var App = _react2.default.createClass({
       ),
       _react2.default.createElement(_loginButton2.default, { userDoc: this.props.userDoc }),
       _react2.default.createElement('hr', null),
-      _react2.default.createElement(_pullRequests2.default, null)
+      _react2.default.createElement(_pullRequests2.default, { user: this.props.userDoc.user })
     );
   }
 });
@@ -39814,7 +39814,170 @@ function mapQueriesToProps(_ref) {
 
 exports.default = (0, _reactApollo.connect)({ mapQueriesToProps: mapQueriesToProps })(App);
 
-},{"./login-button.jsx":342,"./pull-requests.jsx":343,"apollo-client/gql":9,"react":331,"react-apollo":185}],342:[function(require,module,exports){
+},{"./login-button.jsx":344,"./pull-requests.jsx":345,"apollo-client/gql":9,"react":331,"react-apollo":185}],342:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _templateObject = _taggedTemplateLiteral(['\n        query Repos {\n          owners\n        }\n      '], ['\n        query Repos {\n          owners\n        }\n      ']);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactApollo = require('react-apollo');
+
+var _gql = require('apollo-client/gql');
+
+var _gql2 = _interopRequireDefault(_gql);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function getSelected(selectNode) {
+  return Array.from(selectNode.options).reduce(function (vals, opt) {
+    if (opt.selected) vals.push(opt.value);
+    return vals;
+  }, []);
+}
+
+var Filters = _react2.default.createClass({
+  displayName: 'Filters',
+
+  propTypes: {
+    updateFilters: _react2.default.PropTypes.func,
+    pullRequests: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.object),
+    ownersData: _react2.default.PropTypes.object,
+    filterValues: _react2.default.PropTypes.object
+  },
+  onChange: function onChange(evt) {
+    this.props.updateFilters(evt.target.name, getSelected(evt.target));
+  },
+  render: function render() {
+    if (this.props.ownersData.loading) return null;
+    var filterOpts = this.props.pullRequests.reduce(function (opts, pr) {
+      opts.repos.add(pr.repo.fullName);
+      opts.users.add(pr.user.login);
+      return opts;
+    }, {
+      repos: new Set(),
+      users: new Set()
+    });
+    return _react2.default.createElement(
+      'div',
+      { className: 'row' },
+      _react2.default.createElement(
+        'fieldset',
+        { className: 'form-group col-md-4' },
+        _react2.default.createElement(
+          'label',
+          { htmlFor: 'owner' },
+          'Owner'
+        ),
+        _react2.default.createElement(
+          'select',
+          { multiple: true, className: 'form-control', id: 'owner', name: 'owner', onChange: this.onChange, value: this.props.filterValues.owner },
+          this.props.ownersData.owners.map(function (owner, ind) {
+            return _react2.default.createElement(
+              'option',
+              { key: ind, value: owner },
+              owner
+            );
+          })
+        )
+      ),
+      _react2.default.createElement(
+        'fieldset',
+        { className: 'form-group col-md-4' },
+        _react2.default.createElement(
+          'label',
+          { htmlFor: 'repo' },
+          'Repo'
+        ),
+        _react2.default.createElement(
+          'select',
+          { multiple: true, className: 'form-control', id: 'repo', name: 'repo', onChange: this.onChange, value: this.props.filterValues.repo },
+          Array.from(filterOpts.repos).map(function (repo, ind) {
+            return _react2.default.createElement(
+              'option',
+              { key: ind, value: repo },
+              repo
+            );
+          })
+        )
+      ),
+      _react2.default.createElement(
+        'fieldset',
+        { className: 'form-group col-md-4' },
+        _react2.default.createElement(
+          'label',
+          { htmlFor: 'user' },
+          'User'
+        ),
+        _react2.default.createElement(
+          'select',
+          { multiple: true, className: 'form-control', id: 'user', name: 'user', onChange: this.onChange, value: this.props.filterValues.user },
+          Array.from(filterOpts.users).map(function (user, ind) {
+            return _react2.default.createElement(
+              'option',
+              { key: ind, value: user },
+              user
+            );
+          })
+        )
+      )
+    );
+  }
+});
+
+function mapQueriesToProps(_ref) {
+  var ownProps = _ref.ownProps;
+  var state = _ref.state;
+
+  return {
+    ownersData: {
+      query: (0, _gql2.default)(_templateObject)
+    }
+  };
+}
+
+exports.default = (0, _reactApollo.connect)({ mapQueriesToProps: mapQueriesToProps })(Filters);
+
+},{"apollo-client/gql":9,"react":331,"react-apollo":185}],343:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function (_ref) {
+  var loading = _ref.loading;
+
+  if (!loading) return null;
+  return _react2.default.createElement(
+    'div',
+    { className: 'browser-screen-loading-content m-b-1' },
+    _react2.default.createElement(
+      'div',
+      { className: 'loading-dots dark-gray' },
+      _react2.default.createElement('i', null),
+      _react2.default.createElement('i', null),
+      _react2.default.createElement('i', null),
+      _react2.default.createElement('i', null)
+    )
+  );
+};
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+},{"react":331}],344:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39825,6 +39988,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _loader = require('./loader.jsx');
+
+var _loader2 = _interopRequireDefault(_loader);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _react2.default.createClass({
@@ -39834,11 +40001,7 @@ exports.default = _react2.default.createClass({
     userDoc: _react2.default.PropTypes.object
   },
   render: function render() {
-    if (this.props.userDoc.loading) return _react2.default.createElement(
-      'p',
-      null,
-      'Logging in...'
-    );
+    if (this.props.userDoc.loading) return _react2.default.createElement(_loader2.default, { loading: true });
     if (this.props.userDoc.user.name) {
       return _react2.default.createElement(
         'p',
@@ -39855,14 +40018,14 @@ exports.default = _react2.default.createClass({
   }
 });
 
-},{"react":331}],343:[function(require,module,exports){
+},{"./loader.jsx":343,"react":331}],345:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _templateObject = _taggedTemplateLiteral(['\n        query PullRequests {\n          pullRequests {\n            title\n            body\n            url\n            createdAt\n            updatedAt\n            repo {\n              fullName\n              url\n            }\n            user {\n              login\n              url\n            }\n            assignee {\n              name\n            }\n          }\n        }\n      '], ['\n        query PullRequests {\n          pullRequests {\n            title\n            body\n            url\n            createdAt\n            updatedAt\n            repo {\n              fullName\n              url\n            }\n            user {\n              login\n              url\n            }\n            assignee {\n              name\n            }\n          }\n        }\n      ']);
+var _templateObject = _taggedTemplateLiteral(['\n        query PullRequests($owner: [String]) {\n          pullRequests(owner: $owner) {\n            title\n            body\n            url\n            createdAt\n            updatedAt\n            repo {\n              fullName\n              owner\n              url\n            }\n            user {\n              login\n              url\n            }\n            assignee {\n              name\n            }\n          }\n        }\n      '], ['\n        query PullRequests($owner: [String]) {\n          pullRequests(owner: $owner) {\n            title\n            body\n            url\n            createdAt\n            updatedAt\n            repo {\n              fullName\n              owner\n              url\n            }\n            user {\n              login\n              url\n            }\n            assignee {\n              name\n            }\n          }\n        }\n      ']);
 
 var _react = require('react');
 
@@ -39878,29 +40041,59 @@ var _gql = require('apollo-client/gql');
 
 var _gql2 = _interopRequireDefault(_gql);
 
+var _filters = require('./filters.jsx');
+
+var _filters2 = _interopRequireDefault(_filters);
+
+var _loader = require('./loader.jsx');
+
+var _loader2 = _interopRequireDefault(_loader);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-var PullRequests = _react2.default.createClass({
-  displayName: 'PullRequests',
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var PullRequestsInner = _react2.default.createClass({
+  displayName: 'PullRequestsInner',
 
   propTypes: {
-    pullRequestData: _react2.default.PropTypes.object
+    pullRequestData: _react2.default.PropTypes.object,
+    owner: _react2.default.PropTypes.string
+  },
+  getInitialState: function getInitialState() {
+    return {
+      owner: [this.props.owner],
+      repo: [],
+      user: []
+    };
+  },
+  updateFilters: function updateFilters(filter, value) {
+    this.setState(_defineProperty({}, filter, value));
+    if (filter === 'owner') {
+      this.setState({ repo: [], user: [] });
+      this.props.pullRequestData.refetch({ owner: value });
+    }
   },
   render: function render() {
-    if (this.props.pullRequestData.loading) {
-      return _react2.default.createElement(
-        'div',
-        null,
-        'Loading...'
-      );
-    }
-    if (!this.props.pullRequestData.pullRequests) return null;
+    if (!this.props.pullRequestData.pullRequests) return _react2.default.createElement(_loader2.default, { loading: this.props.pullRequestData.loading });
+    var filters = this.state;
+    var filteredPullRequests = this.props.pullRequestData.pullRequests.filter(function (pr) {
+      return (!filters.owner.length || filters.owner.some(function (owner) {
+        return owner === pr.repo.owner;
+      })) && (!filters.repo.length || filters.repo.some(function (repo) {
+        return repo === pr.repo.fullName;
+      })) && (!filters.user.length || filters.user.some(function (user) {
+        return user === pr.user.login;
+      }));
+    });
     return _react2.default.createElement(
       'div',
       null,
-      this.props.pullRequestData.pullRequests.map(function (pullRequest, ind) {
+      _react2.default.createElement(_filters2.default, { updateFilters: this.updateFilters, pullRequests: this.props.pullRequestData.pullRequests, filterValues: this.state }),
+      _react2.default.createElement(_loader2.default, { loading: this.props.pullRequestData.loading }),
+      filteredPullRequests.map(function (pullRequest, ind) {
         return _react2.default.createElement(PullRequest, { key: ind, pullRequest: pullRequest });
       })
     );
@@ -39959,20 +40152,21 @@ var PullRequest = _react2.default.createClass({
       ),
       _react2.default.createElement(
         'span',
-        { className: 'comments' },
+        { className: 'last-update' },
         _react2.default.createElement(
           'div',
           null,
-          '14 comments'
+          'Last updated at ',
+          (0, _moment2.default)(pr.updatedAt).format('hh:mm on DD MMM YY')
         )
       ),
       _react2.default.createElement(
         'span',
-        { className: 'updated' },
+        { className: 'created' },
         _react2.default.createElement(
           'div',
           null,
-          (0, _moment2.default)(pr.updatedAt).format('DD MMM YY')
+          (0, _moment2.default)(pr.createdAt).format('DD MMM YY')
         )
       ),
       _react2.default.createElement(
@@ -39980,8 +40174,8 @@ var PullRequest = _react2.default.createClass({
         { className: 'traffic-light' },
         _react2.default.createElement(
           'svg',
-          { height: 60, width: 60 },
-          _react2.default.createElement('circle', { cx: 30, cy: 30, r: 30, fill: colorString })
+          { height: 50, width: 50 },
+          _react2.default.createElement('circle', { cx: 25, cy: 25, r: 25, fill: colorString })
         )
       )
     );
@@ -39994,11 +40188,26 @@ function mapQueriesToProps(_ref) {
 
   return {
     pullRequestData: {
-      query: (0, _gql2.default)(_templateObject)
+      query: (0, _gql2.default)(_templateObject),
+      variables: {
+        owner: [ownProps.owner]
+      }
     }
   };
 }
 
-exports.default = (0, _reactApollo.connect)({ mapQueriesToProps: mapQueriesToProps })(PullRequests);
+var PullRequests = (0, _reactApollo.connect)({ mapQueriesToProps: mapQueriesToProps })(PullRequestsInner);
 
-},{"apollo-client/gql":9,"moment":180,"react":331,"react-apollo":185}]},{},[1]);
+exports.default = _react2.default.createClass({
+  displayName: 'pull-requests',
+
+  propTypes: {
+    user: _react2.default.PropTypes.object
+  },
+  render: function render() {
+    if (!this.props.user || !this.props.user.login) return null;
+    return _react2.default.createElement(PullRequests, { owner: this.props.user.login });
+  }
+});
+
+},{"./filters.jsx":342,"./loader.jsx":343,"apollo-client/gql":9,"moment":180,"react":331,"react-apollo":185}]},{},[1]);

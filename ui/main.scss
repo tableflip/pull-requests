@@ -29,14 +29,14 @@ $brand-danger:              #d9534f;
   }
 
   .main-info {
-    flex: 0 1 50%;
+    flex: 1 1 400px;
   }
-  .comments {
-    flex: 0 1 20%;
+  .last-update {
+    flex: 0 1 200px;
     color: $gray;
   }
-  .updated {
-    flex: 1 0 20%;
+  .created {
+    flex: 1 0 100px;
     color: $gray;
   }
   .traffic-light {
@@ -53,3 +53,5 @@ $brand-danger:              #d9534f;
     }
   }
 }
+
+@import "loader.scss";

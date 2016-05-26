@@ -2,9 +2,9 @@ const typeDefinitions = `
 
 type Query {
   user: User,
-  organizations: [Organization],
+  owners: [String],
   repos: [Repo],
-  pullRequests(owner: String): [PullRequest]
+  pullRequests(owner: [String]): [PullRequest]
 }
 
 type User {
@@ -14,10 +14,6 @@ type User {
   company: String,
   avatar: String,
   url: String
-}
-
-type Organization {
-  name: String
 }
 
 type Repo {

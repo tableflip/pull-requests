@@ -14,7 +14,7 @@ const App = React.createClass({
         <h1>Pull Requests</h1>
         <LoginButton userDoc={this.props.userDoc} />
         <hr />
-        <PullRequests />
+        <PullRequests user={this.props.userDoc.user} />
       </div>
     )
   }
@@ -30,6 +30,7 @@ function mapQueriesToProps ({ ownProps, state }) {
             type
             company
             avatar
+            login
           }
           repos {
             fullName

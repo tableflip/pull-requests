@@ -9,6 +9,7 @@ import githubInterface from './github-interface/github'
 const github = githubInterface()
 promisify(github)
 const app = express()
+graphQLServer(app, github)
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
@@ -17,7 +18,6 @@ app.get('/', (req, res) => {
 app.get('/login-error', (req, res) => {
   res.send('There was a login error')
 })
-graphQLServer(app, github)
 
 const go = githubOauth({
   githubClient: config.github.client,
