@@ -29,8 +29,10 @@ export default function (initToken) {
   }
 
   var github = {
+    onNewToken () {},
     setToken (newToken) {
       token = newToken
+      github.onNewToken()
     },
     getUser (cb) {
       if (!cb) throw new Error('Please supply a callback function')

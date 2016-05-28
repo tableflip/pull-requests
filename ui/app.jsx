@@ -35,7 +35,7 @@ export default React.createClass({
         <h1>Pull Requests</h1>
         <LoginButton />
         <hr />
-        {/* <PullRequests user={this.props.userDoc.user} /> */}
+        <PullRequests />
       </div>
     )
   }

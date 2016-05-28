@@ -16,24 +16,35 @@ export function ddpConnect (mapSubsToProps) {
             stateObj[key] = false
             return stateObj
           }, {}),
+          collections: Object.keys(subObj).reduce((collObj, key) => {
+            collObj[key] = []
+            return collObj
+          }, {}),
           connected: false
         }
       },
+      subs: {},
       subscribe (key) {
-        this[key] = {}
-        this[key].sub = this.context.ddpClient.subscribe(key, this.state.subObj[key], () => {
+        console.log(`subscribing to ${key}`)
+        this.subs[key] = {}
+        this.subs[key].sub = this.context.ddpClient.subscribe(key, this.state.subObj[key], () => {
+          console.log(`subscription to ${key} ready`)
           this.setState({
-            subs: Object.assign({}, this.subs, { [key]: true })
+            subs: Object.assign({}, this.state.subs, { [key]: true })
           })
         })
-        this[key].observer = this.context.ddpClient.observe('users')
-        this[key].observer.added = this.forceUpdate.bind(this, null)
-        this[key].observer.changed = this.forceUpdate.bind(this, null)
-        this[key].observer.removed = this.forceUpdate.bind(this, null)
+        this.subs[key].observer = this.context.ddpClient.observe(key)
+        this.subs[key].observer.added = this.updateCollection.bind(this, key)
+        this.subs[key].observer.changed = this.updateCollection.bind(this, key)
+        this.subs[key].observer.removed = this.updateCollection.bind(this, key)
+      },
+      updateCollection (key) {
+        this.setState({ collections: Object.assign({}, this.state.collections, { [key]: this.context.ddpClient.collections[key] }) })
       },
       unsubscribe (key) {
-        this[key].observer.stop()
-        this.context.ddpClient.unsubscribe(this[key].sub)
+        console.log(`unsubscribing from ${key}`)
+        this.subs[key].observer.stop()
+        this.context.ddpClient.unsubscribe(this.subs[key].sub)
       },
       componentDidMount () {
         if (this.context.connected) Object.keys(this.state.subObj).forEach((key) => this.subscribe(key))
@@ -60,9 +71,7 @@ export function ddpConnect (mapSubsToProps) {
       },
       render () {
         const addedProps = Object.keys(this.state.subObj).reduce((props, sub) => {
-          props[sub] = this.context.ddpClient.collections
-            ? (this.context.ddpClient.collections[sub] || {})
-            : {}
+          props[sub] = this.state.collections[sub]
           return props
         }, {
           subs: this.state.subs,

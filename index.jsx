@@ -2,15 +2,13 @@ import express from 'express'
 import config from 'config'
 import githubOauth from 'github-oauth'
 import promisify from 'promisify-node'
-import DDPServer from 'ddp-server-reactive'
-// import graphQLServer from './graphql-server'
 import root from './root'
 import githubInterface from './github-interface/github'
+import ddpServer from './ddp-server'
 
 const github = githubInterface()
 promisify(github)
 const app = express()
-// graphQLServer(app, github)
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
@@ -44,7 +42,4 @@ const server = app.listen(config.port, () => {
   console.log(`Server running at: http://${host}:${port} env: ${process.env.NODE_ENV}`)
 })
 
-const ddpServer = new DDPServer({ httpServer: server })
-
-var users = ddpServer.publish('users')
-users[0] = { name: 'Richard' }
+ddpServer(server, github)

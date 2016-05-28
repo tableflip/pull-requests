@@ -10,7 +10,8 @@ const LoginButton = React.createClass({
   },
   render () {
     if (!this.props.connected || !this.props.subsReady) return (<Loader loading={true} />)
-    const username = this.props.users[0].name
+    console.log(this.props.users)
+    const username = this.props.users[0] && this.props.users[0].name
     if (username) {
       return (<p>Logged in as {username}</p>)
     }

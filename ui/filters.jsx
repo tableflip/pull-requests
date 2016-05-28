@@ -1,6 +1,5 @@
 import React from 'react'
-import { connect } from 'react-apollo'
-import gql from 'apollo-client/gql'
+import { ddpConnect } from './ddp-connect.jsx'
 
 function getSelected (selectNode) {
   return Array.from(selectNode.options).reduce((vals, opt) => {
@@ -9,20 +8,25 @@ function getSelected (selectNode) {
   }, [])
 }
 
+Object.values = function (obj) {
+  return Object.keys(obj).map((key) => obj[key])
+}
+
 const Filters = React.createClass({
   propTypes: {
     updateFilters: React.PropTypes.func,
     pullRequests: React.PropTypes.arrayOf(React.PropTypes.object),
-    ownersData: React.PropTypes.object,
-    filterValues: React.PropTypes.object
+    owners: React.PropTypes.object,
+    filterValues: React.PropTypes.object,
+    subsReady: React.PropTypes.bool
   },
   onChange (evt) {
     this.props.updateFilters(evt.target.name, getSelected(evt.target))
   },
   render () {
-    if (this.props.ownersData.loading) return null
+    if (!this.props.subsReady) return null
     const filterOpts = this.props.pullRequests.reduce((opts, pr) => {
-      opts.repos.add(pr.repo.fullName)
+      opts.repos.add(pr.base.repo.full_name)
       opts.users.add(pr.user.login)
       return opts
     }, {
@@ -34,8 +38,8 @@ const Filters = React.createClass({
         <fieldset className='form-group col-md-4'>
           <label htmlFor='owner'>Owner</label>
           <select multiple className='form-control' id='owner' name='owner' onChange={this.onChange} value={this.props.filterValues.owner}>
-            {this.props.ownersData.owners.map((owner, ind) => {
-              return (<option key={ind} value={owner}>{owner}</option>)
+            {Object.values(this.props.owners).map((owner, ind) => {
+              return (<option key={ind} value={owner._id}>{owner._id}</option>)
             })}
           </select>
         </fieldset>
@@ -60,16 +64,10 @@ const Filters = React.createClass({
   }
 })
 
-function mapQueriesToProps ({ ownProps, state }) {
+function mapSubsToProps () {
   return {
-    ownersData: {
-      query: gql`
-        query Repos {
-          owners
-        }
-      `
-    }
+    owners: []
   }
 }
 
-export default connect({ mapQueriesToProps })(Filters)
+export default ddpConnect(mapSubsToProps)(Filters)
