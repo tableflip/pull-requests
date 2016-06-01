@@ -15,8 +15,8 @@ Object.values = function (obj) {
 const Filters = React.createClass({
   propTypes: {
     updateFilters: React.PropTypes.func,
-    pullRequests: React.PropTypes.arrayOf(React.PropTypes.object),
-    owners: React.PropTypes.object,
+    pullRequests: React.PropTypes.any,
+    owners: React.PropTypes.any,
     filterValues: React.PropTypes.object,
     subsReady: React.PropTypes.bool
   },
@@ -33,6 +33,7 @@ const Filters = React.createClass({
       repos: new Set(),
       users: new Set()
     })
+    if (!this.props.pullRequests || !this.props.pullRequests.length) return null
     return (
       <div className='row'>
         <fieldset className='form-group col-md-4'>

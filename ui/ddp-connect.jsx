@@ -1,7 +1,7 @@
 import React from 'react'
 import equals from 'equals'
 
-export function ddpConnect (mapSubsToProps) {
+export function ddpConnect (mapSubsToProps, mapMethodsToProps = () => ({})) {
   return (ChildComponent) => {
     return React.createClass({
       contextTypes: {
@@ -25,10 +25,8 @@ export function ddpConnect (mapSubsToProps) {
       },
       subs: {},
       subscribe (key) {
-        console.log(`subscribing to ${key}`)
         this.subs[key] = {}
         this.subs[key].sub = this.context.ddpClient.subscribe(key, this.state.subObj[key], () => {
-          console.log(`subscription to ${key} ready`)
           this.setState({
             subs: Object.assign({}, this.state.subs, { [key]: true })
           })
@@ -42,7 +40,6 @@ export function ddpConnect (mapSubsToProps) {
         this.setState({ collections: Object.assign({}, this.state.collections, { [key]: this.context.ddpClient.collections[key] }) })
       },
       unsubscribe (key) {
-        console.log(`unsubscribing from ${key}`)
         this.subs[key].observer.stop()
         this.context.ddpClient.unsubscribe(this.subs[key].sub)
       },
@@ -70,14 +67,24 @@ export function ddpConnect (mapSubsToProps) {
         Object.keys(this.state.subObj).forEach((key) => this.unsubscribe(key))
       },
       render () {
+        const methods = mapMethodsToProps(this.props)
+        const ddpClient = this.context.ddpClient
         const addedProps = Object.keys(this.state.subObj).reduce((props, sub) => {
           props[sub] = this.state.collections[sub]
+          return props
+        }, Object.keys(methods).reduce((props, method) => {
+          props[method] = function () {
+            let args = Array.from(arguments)
+            let cb = null
+            if (typeof args[args.length - 1] === 'function') cb = args.pop()
+            ddpClient.call(methods[method], args, cb)
+          }
           return props
         }, {
           subs: this.state.subs,
           connected: this.context.connected,
           subsReady: Object.keys(this.state.subObj).reduce((ready, sub) => ready && this.state.subs[sub], true)
-        })
+        }))
         return (
           <ChildComponent {...this.props} {...addedProps} />
         )

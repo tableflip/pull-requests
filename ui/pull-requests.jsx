@@ -10,8 +10,9 @@ Object.values = function (obj) {
 
 const PullRequests = React.createClass({
   propTypes: {
-    pullRequests: React.PropTypes.array,
-    loadingIndicator: React.PropTypes.array,
+    pullRequests: React.PropTypes.any,
+    loadingIndicator: React.PropTypes.any,
+    setOwner: React.PropTypes.func,
     subsReady: React.PropTypes.bool
   },
   getInitialState () {
@@ -25,10 +26,11 @@ const PullRequests = React.createClass({
     this.setState({ [filter]: value })
     if (filter === 'owner') {
       this.setState({ repo: [], user: [] })
+      this.props.setOwner(value)
     }
   },
   render () {
-    if (!this.props.subsReady || (this.props.loadingIndicator[0] && this.props.loadingIndicator[0].value)) return (<Loader />)
+    if (!this.props.subsReady || (this.props.loadingIndicator[0] && this.props.loadingIndicator[0].value)) return (<Loader loading={true} />)
     const filters = this.state
     const pullRequests = Object.values(this.props.pullRequests || {})
     const filteredPullRequests = pullRequests.filter((pr) => {
@@ -94,4 +96,10 @@ function mapSubsToProps () {
   }
 }
 
-export default ddpConnect(mapSubsToProps)(PullRequests)
+function mapMethodsToProps () {
+  return {
+    setOwner: 'setOwner'
+  }
+}
+
+export default ddpConnect(mapSubsToProps, mapMethodsToProps)(PullRequests)

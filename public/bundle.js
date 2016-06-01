@@ -40623,6 +40623,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function ddpConnect(mapSubsToProps) {
+  var mapMethodsToProps = arguments.length <= 1 || arguments[1] === undefined ? function () {
+    return {};
+  } : arguments[1];
+
   return function (ChildComponent) {
     return _react2.default.createClass({
       contextTypes: {
@@ -40649,10 +40653,8 @@ function ddpConnect(mapSubsToProps) {
       subscribe: function subscribe(key) {
         var _this = this;
 
-        console.log('subscribing to ' + key);
         this.subs[key] = {};
         this.subs[key].sub = this.context.ddpClient.subscribe(key, this.state.subObj[key], function () {
-          console.log('subscription to ' + key + ' ready');
           _this.setState({
             subs: Object.assign({}, _this.state.subs, _defineProperty({}, key, true))
           });
@@ -40666,7 +40668,6 @@ function ddpConnect(mapSubsToProps) {
         this.setState({ collections: Object.assign({}, this.state.collections, _defineProperty({}, key, this.context.ddpClient.collections[key])) });
       },
       unsubscribe: function unsubscribe(key) {
-        console.log('unsubscribing from ' + key);
         this.subs[key].observer.stop();
         this.context.ddpClient.unsubscribe(this.subs[key].sub);
       },
@@ -40714,8 +40715,18 @@ function ddpConnect(mapSubsToProps) {
       render: function render() {
         var _this5 = this;
 
+        var methods = mapMethodsToProps(this.props);
+        var ddpClient = this.context.ddpClient;
         var addedProps = Object.keys(this.state.subObj).reduce(function (props, sub) {
           props[sub] = _this5.state.collections[sub];
+          return props;
+        }, Object.keys(methods).reduce(function (props, method) {
+          props[method] = function () {
+            var args = Array.from(arguments);
+            var cb = null;
+            if (typeof args[args.length - 1] === 'function') cb = args.pop();
+            ddpClient.call(methods[method], args, cb);
+          };
           return props;
         }, {
           subs: this.state.subs,
@@ -40723,7 +40734,7 @@ function ddpConnect(mapSubsToProps) {
           subsReady: Object.keys(this.state.subObj).reduce(function (ready, sub) {
             return ready && _this5.state.subs[sub];
           }, true)
-        });
+        }));
         return _react2.default.createElement(ChildComponent, _extends({}, this.props, addedProps));
       }
     });
@@ -40763,8 +40774,8 @@ var Filters = _react2.default.createClass({
 
   propTypes: {
     updateFilters: _react2.default.PropTypes.func,
-    pullRequests: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.object),
-    owners: _react2.default.PropTypes.object,
+    pullRequests: _react2.default.PropTypes.any,
+    owners: _react2.default.PropTypes.any,
     filterValues: _react2.default.PropTypes.object,
     subsReady: _react2.default.PropTypes.bool
   },
@@ -40781,6 +40792,7 @@ var Filters = _react2.default.createClass({
       repos: new Set(),
       users: new Set()
     });
+    if (!this.props.pullRequests || !this.props.pullRequests.length) return null;
     return _react2.default.createElement(
       'div',
       { className: 'row' },
@@ -40912,11 +40924,10 @@ var LoginButton = _react2.default.createClass({
   propTypes: {
     connected: _react2.default.PropTypes.bool,
     subsReady: _react2.default.PropTypes.bool,
-    users: _react2.default.PropTypes.object
+    users: _react2.default.PropTypes.any
   },
   render: function render() {
     if (!this.props.connected || !this.props.subsReady) return _react2.default.createElement(_loader2.default, { loading: true });
-    console.log(this.props.users);
     var username = this.props.users[0] && this.props.users[0].name;
     if (username) {
       return _react2.default.createElement(
@@ -40981,8 +40992,9 @@ var PullRequests = _react2.default.createClass({
   displayName: 'PullRequests',
 
   propTypes: {
-    pullRequests: _react2.default.PropTypes.array,
-    loadingIndicator: _react2.default.PropTypes.array,
+    pullRequests: _react2.default.PropTypes.any,
+    loadingIndicator: _react2.default.PropTypes.any,
+    setOwner: _react2.default.PropTypes.func,
     subsReady: _react2.default.PropTypes.bool
   },
   getInitialState: function getInitialState() {
@@ -40996,10 +41008,11 @@ var PullRequests = _react2.default.createClass({
     this.setState(_defineProperty({}, filter, value));
     if (filter === 'owner') {
       this.setState({ repo: [], user: [] });
+      this.props.setOwner(value);
     }
   },
   render: function render() {
-    if (!this.props.subsReady || this.props.loadingIndicator[0] && this.props.loadingIndicator[0].value) return _react2.default.createElement(_loader2.default, null);
+    if (!this.props.subsReady || this.props.loadingIndicator[0] && this.props.loadingIndicator[0].value) return _react2.default.createElement(_loader2.default, { loading: true });
     var filters = this.state;
     var pullRequests = Object.values(this.props.pullRequests || {});
     var filteredPullRequests = pullRequests.filter(function (pr) {
@@ -41112,6 +41125,12 @@ function mapSubsToProps() {
   };
 }
 
-exports.default = (0, _ddpConnect.ddpConnect)(mapSubsToProps)(PullRequests);
+function mapMethodsToProps() {
+  return {
+    setOwner: 'setOwner'
+  };
+}
+
+exports.default = (0, _ddpConnect.ddpConnect)(mapSubsToProps, mapMethodsToProps)(PullRequests);
 
 },{"./ddp-connect.jsx":299,"./filters.jsx":300,"./loader.jsx":301,"moment":136,"react":287}]},{},[4]);
