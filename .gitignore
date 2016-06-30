@@ -34,3 +34,6 @@ node_modules
 
 config/local.json
 config/prod.json
+
+public/bundle.css
+public/bundle.js
